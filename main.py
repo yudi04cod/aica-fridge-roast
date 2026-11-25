@@ -18,11 +18,16 @@ LINE = (
 )
 
 
+def validate(line: str) -> str:
+    """Check the entry line before writing: non-empty, one line, <= 200 chars."""
+    assert line, "entry line must not be empty"
+    assert "\n" not in line and "\r" not in line, "entry must be a single line"
+    assert len(line) <= 200, f"entry too long: {len(line)} characters (limit 200)"
+    return line
+
+
 def main() -> int:
-    line = LINE.strip()
-    if not line or len(line) > 200:
-        print(f"entry invalid: {len(line)} characters", file=sys.stderr)
-        return 1
+    line = validate(LINE.strip())
     out_dir = os.environ.get("OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
